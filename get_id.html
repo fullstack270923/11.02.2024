@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <title>GET</title>
     <style>
         table,
         th,
@@ -24,7 +23,7 @@
 
 <body>
     <h2>Get All</h2>
-    GET BY ID : <input type="number" id="user_id_txt" value="0"> 
+    GET BY ID : <input type="number" id="user_id_txt" value="0">
     <button id="get_user" onclick="get_user_by_id()">GET BY ID</button><br /><br />
     <table id="users_table" style="width: 100%">
         <thead>
@@ -45,9 +44,39 @@
 
     <script>
         function get_user_by_id() {
-        }
-        get_users();
 
+            const user_id = document.getElementById('user_id_txt').value
+
+            fetch(`http://localhost:3000/users/${user_id}`)
+                .then(response => {
+                    if (response.status === 404) {
+                        document.write('Not found')
+                        return null;
+                    }
+                    return response.json()
+                })
+                .then(user => {
+                    // getElementsByTagName returns array
+                    // therefor we use the first element in the array == [0]
+                    const tbody = document.getElementById('users_table').getElementsByTagName('tbody')[0]
+                    //tbody.innerHTML = '';
+
+                    const new_row = document.createElement('tr')
+                    insert_cell(new_row, user.id)
+                    insert_cell(new_row, user.name)
+                    insert_cell(new_row, user.username)
+                    insert_cell(new_row, user.email)
+                    insert_cell(new_row, user.address.city)
+                    insert_cell(new_row, user.phone)
+                    insert_cell(new_row, user.website)
+                    tbody.appendChild(new_row)
+                })
+        }
+        function insert_cell(new_row, data) {
+            const new_cell = document.createElement('td')
+            new_cell.textContent = data
+            new_row.appendChild(new_cell)
+        }
         // GET
         // GET ID
     </script>
